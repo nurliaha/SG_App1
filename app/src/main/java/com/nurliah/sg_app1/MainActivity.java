@@ -1,15 +1,24 @@
 package com.nurliah.sg_app1;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.UserHandle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.nurliah.sg_app1.model.USer;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    TextInputLayout til_nama;
+    EditText et_umur;
+    Spinner spinner_gender;
+    Button btn_process;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,35 +27,45 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
+        til_nama = findViewById(R.id.til_nama);
+        et_umur = findViewById(R.id.et_umur);
+        spinner_gender = findViewById(R.id.spinner_gender);
+        btn_process = findViewById(R.id.btn_process);
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        btn_process.setOnClickListener(this);
         }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btn_process:
+                //ngejalanin apa ?
+                validateData();
+                break;
+        }
+    }
+
+    void validateData(){
+        if (til_nama.getEditText() !=null){
+            if(!til_nama.getEditText().getText().toString().equals("")&& !et_umur.getText().toString().equals("")){
+                USer uSer = new USer();
+                uSer.nama = til_nama.getEditText().getText().toString();
+                uSer.umur = Integer.parseInt(et_umur.getText().toString());
+                uSer.gender = spinner_gender.getSelectedItem().toString();
+
+                processData(uSer);
+            }else{
+                Toast.makeText(this, "Data tidak boleh kososng", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    private void processData(USer uSer){
+        Intent intent = new Intent(this,ListActivity.class);
+        intent.putExtra("nama", uSer.nama);
+        intent.putExtra("umur", uSer.umur);
+        intent.putExtra("gender", uSer.gender);
+        startActivity(intent);
     }
 }
+
+
